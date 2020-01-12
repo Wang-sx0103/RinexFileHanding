@@ -164,8 +164,10 @@ Program Main
     Character(len = 1) SatName
     Integer  TypeNum
     Integer  Interim_Int
+    Integer Minute
+    Real(Kind = 8) Second
     Character(len = 60)  ObsTypes     !观测类型的排列顺序
-    Character(len = 322) DataRow      !观测文件的数据行 20*(14+2)+3 = 323,最多的情况为伽利略系统5分频率的观测信号
+    Character(len = 323) DataRow      !观测文件的数据行 20*(14+2)+3 = 323,最多的情况为伽利略系统5分频率的观测信号
     
     
     !write(*,*)
@@ -574,39 +576,42 @@ Program Main
         End If
         
         If (DataRow(1:1) == ">") Then
-            
-            Epoch = Epoch + 1
+            Read(DataRow(14:15),"(I2)") Hour
+            Read(DataRow(17:18),"(I2)") Minute
+            Read(DataRow(19:29),"(F11.7)") Second
+            Epoch = (Hour*3600+Minute*60+Nint(Second))/30 + 1
+            !Epoch = Epoch + 1
             Cycle
         Else If (DataRow(1:1) == "C") Then
             Read(DataRow(2:3),"(I2)") TypeNum
-            Read(DataRow(4:17),"(F14.3)") Interim_Int
-            C_1_PR(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(20:33),"(F14.3)") Interim_Int
-            C_3_PR(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(36:49),"(F14.3)") Interim_Int
-            C_2_PR(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(52:65),"(F14.3)") Interim_Int
-            C_1_Do(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(68:81),"(F14.3)") Interim_Int
-            C_3_Do(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(84:97),"(F14.3)") Interim_Int
-            C_2_Do(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(100:113),"(F14.3)") Interim_Int
-            C_1_CP(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(116:129),"(F14.3)") Interim_Int
-            C_3_CP(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(132:145),"(F14.3)") Interim_Int
-            C_2_CP(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(148:161),"(F14.3)") Interim_Int
-            C_1_SS(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(164:177),"(F14.3)") Interim_Int
-            C_3_SS(TypeNum,Epoch) = Interim_Int
-            Read(DataRow(180:193),"(F14.3)") Interim_Int
-            C_2_SS(TypeNum,Epoch) = Interim_Int
+            Read(DataRow(4:17),"(F14.3)") Interim
+            C_1_PR(TypeNum,Epoch) = Interim
+            Read(DataRow(20:33),"(F14.3)") Interim
+            C_3_PR(TypeNum,Epoch) = Interim
+            Read(DataRow(36:49),"(F14.3)") Interim
+            C_2_PR(TypeNum,Epoch) = Interim
+            Read(DataRow(52:65),"(F14.3)") Interim
+            C_1_Do(TypeNum,Epoch) = Interim
+            Read(DataRow(68:81),"(F14.3)") Interim
+            C_3_Do(TypeNum,Epoch) = Interim
+            Read(DataRow(84:97),"(F14.3)") Interim
+            C_2_Do(TypeNum,Epoch) = Interim
+            Read(DataRow(100:113),"(F14.3)") Interim 
+            C_1_CP(TypeNum,Epoch) = Interim 
+            Read(DataRow(116:129),"(F14.3)") Interim 
+            C_3_CP(TypeNum,Epoch) = Interim
+            Read(DataRow(132:145),"(F14.3)") Interim 
+            C_2_CP(TypeNum,Epoch) = Interim 
+            Read(DataRow(148:161),"(F14.3)") Interim 
+            C_1_SS(TypeNum,Epoch) = Interim 
+            Read(DataRow(164:177),"(F14.3)") Interim
+            C_3_SS(TypeNum,Epoch) = Interim
+            Read(DataRow(180:193),"(F14.3)") Interim
+            C_2_SS(TypeNum,Epoch) = Interim
         End If
     End Do
     
-    Write(*,*) C_1_PR(1,1)
+    Write(*,"(F14.3)") C_1_PR(1,371)
     Write(*,*)
     write(*,*) "Press any key to exit!"
     Read(*,*)
